@@ -61,6 +61,6 @@ RUN apt install nginx -y
 COPY ./default.conf /etc/nginx/conf.d/default.conf
 
 # Copy desktop dist
-COPY COPY --from=node app/receipt-wrangler-desktop/dist/receipt-wrangler /usr/share/nginx/html
+COPY COPY --from=node /app/receipt-wrangler-desktop/dist/receipt-wrangler /usr/share/nginx/html
 
 EXPOSE 80
