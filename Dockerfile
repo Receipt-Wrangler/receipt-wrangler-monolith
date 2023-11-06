@@ -1,25 +1,27 @@
-FROM node:21-bookworm
+FROM node:lts-alpine3.17 as node
 WORKDIR /app
 
-# Apt update
-RUN apt update
-
-# Pull clone source
-RUN git clone https://github.com/Receipt-Wrangler/receipt-wrangler-api.git
+# Clone desktop source
 RUN git clone https://github.com/Receipt-Wrangler/receipt-wrangler-desktop.git
 
-# Install GO
-RUN wget https://go.dev/dl/go1.21.3.linux-amd64.tar.gz
-RUN rm -rf /usr/local/go && tar -C /usr/local -xzf go1.21.3.linux-amd64.tar.gz
-ENV GOPATH /go
-ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
-RUN go version
+# Setup Desktop
+RUN npm install -g @angular/cli
+WORKDIR /app/receipt-wrangler-desktop
+RUN npm install
+RUN npm run build
+
+# Setup API
+FROM golang:1.20.7-bullseye
+
+# Clone api soruce
+WORKDIR /app
+RUN git clone https://github.com/Receipt-Wrangler/receipt-wrangler-api.git
 
 # Setup API
 WORKDIR /app/receipt-wrangler-api
 
 # Set up config volume
-VOLUME /go/api/config
+VOLUME /app/receipt-wrangler-api/config
 
 ## Add local bin to path for python dependencies
 ENV PATH="~/.local/bin:${PATH}"
@@ -28,7 +30,7 @@ ENV PATH="~/.local/bin:${PATH}"
 ENV ENV="prod"
 
 ## Set base path
-ENV BASE_PATH="/go/api"
+ENV BASE_PATH="/app/receipt-wrangler-api"
 
 ## Install tesseract dependencies
 RUN ./set-up-dependencies.sh
@@ -38,32 +40,27 @@ RUN go build
 
 ## Set up data volume
 RUN mkdir data
-VOLUME /go/api/data
+VOLUME /app/receipt-wrangler-api/data
 
 ## Set up temp directory
 RUN mkdir temp
 
 ## Set up sqlite volume
-VOLUME /go/api/sqlite
+VOLUME /app/receipt-wrangler-api/sqlite
 
 ## Add logs volume
 RUN mkdir logs
-VOLUME /go/api/logs
-
-# Setup Desktop
-RUN npm install -g @angular/cli
-WORKDIR /app/receipt-wrangler-desktop
-RUN npm install
-RUN npm run build
+VOLUME /app/receipt-wrangler-api/logs
 
 # Setup nginx
+WORKDIR /app/receipt-wrangler-monolith
+COPY . .
+
 RUN apt update
 RUN apt install nginx -y
-WORKDIR /app/receipt-wrangler-monolith
 COPY ./default.conf /etc/nginx/conf.d/default.conf
 
 # Copy desktop dist
-WORKDIR /app/receipt-wrangler-desktop
-COPY ./dist/receipt-wrangler /usr/share/nginx/html
+COPY COPY --from=node app/receipt-wrangler-desktop/dist/receipt-wrangler /usr/share/nginx/html
 
 EXPOSE 80
