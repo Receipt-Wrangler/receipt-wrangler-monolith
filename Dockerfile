@@ -8,8 +8,6 @@ RUN git clone https://github.com/Receipt-Wrangler/receipt-wrangler-desktop.git
 RUN npm install -g @angular/cli
 WORKDIR /app/receipt-wrangler-desktop
 
-RUN cat .npmrc
-
 RUN npm install
 RUN npm run build
 
