@@ -1,4 +1,4 @@
-FROM node:lts-alpine3.17 as node
+FROM node:lts-bookworm-slim as node
 WORKDIR /app
 
 # Clone desktop source
