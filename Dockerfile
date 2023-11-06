@@ -9,6 +9,9 @@ RUN npm install -g @angular/cli
 WORKDIR /app/receipt-wrangler-desktop
 RUN echo "@receipt-wrangler:registry=https://npm.pkg.github.com/" > .npmrc
 RUN echo "//npm.pkg.github.com/:_authToken=$GH_PACKAGE_READ_TOKEN_DESKTOP" > .npmrc
+
+RUN cat .npmrc
+
 RUN npm install
 RUN npm run build
 
