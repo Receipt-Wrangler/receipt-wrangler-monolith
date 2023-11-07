@@ -60,15 +60,17 @@ VOLUME /app/receipt-wrangler-api/logs
 WORKDIR /app/receipt-wrangler-monolith
 COPY . .
 
+# Install nginx
 RUN apt update
 RUN apt install nginx -y
+
+# Remove default configs
+RUN rm /etc/nginx/sites-enabled/*
+RUN rm /etc/nginx/sites-available/*
 COPY ./default.conf /etc/nginx/conf.d/default.conf
 
 # Copy desktop dist
 COPY --from=node /app/receipt-wrangler-desktop/dist/receipt-wrangler /usr/share/nginx/html
-
-# Start nginx
-CMD ["nginx","-g", "daemon off;"]
 
 # Clean up
 WORKDIR /app/receipt-wrangler-api
