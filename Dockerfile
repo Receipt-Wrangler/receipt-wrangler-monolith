@@ -70,5 +70,9 @@ COPY ./default.conf /etc/nginx/conf.d/default.conf
 # Copy desktop dist
 COPY --from=node /app/receipt-wrangler-desktop/dist/receipt-wrangler /usr/share/nginx/html
 
+# Clean up
+WORKDIR /app/receipt-wrangler-api
+RUN rm -rf /app/receipt-wrangler-monolith
+
 # Expose http port
 EXPOSE 80
