@@ -1,10 +1,8 @@
 FROM node:lts-bookworm as node
-RUN ls -a
 WORKDIR /app
 
 # Clone desktop source
 RUN git clone https://github.com/Receipt-Wrangler/receipt-wrangler-desktop.git
-
 
 # Setup Desktop
 RUN npm install -g @angular/cli
@@ -12,7 +10,6 @@ WORKDIR /app/receipt-wrangler-desktop
 
 # Set up npmrc
 COPY . . 
-RUN ls -a
 
 RUN npm install
 RUN npm run build
@@ -30,32 +27,32 @@ WORKDIR /app/receipt-wrangler-api
 # Set up config volume
 VOLUME /app/receipt-wrangler-api/config
 
-## Add local bin to path for python dependencies
+# Add local bin to path for python dependencies
 ENV PATH="~/.local/bin:${PATH}"
 
-## Set env
+# Set env
 ENV ENV="prod"
 
-## Set base path
+# Set base path
 ENV BASE_PATH="/app/receipt-wrangler-api"
 
-## Install tesseract dependencies
+# Install tesseract dependencies
 RUN ./set-up-dependencies.sh
 
-## Build api
+# Build api
 RUN go build
 
-## Set up data volume
+# Set up data volume
 RUN mkdir data
 VOLUME /app/receipt-wrangler-api/data
 
-## Set up temp directory
+# Set up temp directory
 RUN mkdir temp
 
-## Set up sqlite volume
+# Set up sqlite volume
 VOLUME /app/receipt-wrangler-api/sqlite
 
-## Add logs volume
+# Add logs volume
 RUN mkdir logs
 VOLUME /app/receipt-wrangler-api/logs
 
@@ -69,6 +66,9 @@ COPY ./default.conf /etc/nginx/conf.d/default.conf
 
 # Copy desktop dist
 COPY --from=node /app/receipt-wrangler-desktop/dist/receipt-wrangler /usr/share/nginx/html
+
+# Start nginx
+CMD ["nginx","-g", "daemon off;"]
 
 # Clean up
 WORKDIR /app/receipt-wrangler-api
