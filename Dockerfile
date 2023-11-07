@@ -5,13 +5,14 @@ WORKDIR /app
 # Clone desktop source
 RUN git clone https://github.com/Receipt-Wrangler/receipt-wrangler-desktop.git
 
-# Set up npmrc
-RUN echo "@receipt-wrangler:registry=https://npm.pkg.github.com/" > $HOME/.npmrc
-RUN echo "//npm.pkg.github.com/:_authToken=$GH_PACKAGE_READ_TOKEN_DESKTOP" > $HOME/.npmrc
 
 # Setup Desktop
 RUN npm install -g @angular/cli
 WORKDIR /app/receipt-wrangler-desktop
+
+# Set up npmrc
+COPY . . 
+RUN ls -a
 
 RUN npm install
 RUN npm run build
