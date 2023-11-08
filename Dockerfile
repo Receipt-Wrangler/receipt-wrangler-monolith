@@ -78,6 +78,7 @@ WORKDIR /app
 RUN rm -rf /app/receipt-wrangler-monolith
 
 # Set up entrypoint
+RUN chmod +x /app/entrypoint.sh
 ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Expose http port
