@@ -59,6 +59,7 @@ VOLUME /app/receipt-wrangler-api/logs
 # Setup nginx
 WORKDIR /app/receipt-wrangler-monolith
 COPY . .
+COPY ./entrypoint.sh /app
 
 # Install nginx
 RUN apt update
@@ -73,8 +74,11 @@ COPY ./default.conf /etc/nginx/conf.d/default.conf
 COPY --from=node /app/receipt-wrangler-desktop/dist/receipt-wrangler /usr/share/nginx/html
 
 # Clean up
-WORKDIR /app/receipt-wrangler-api
+WORKDIR /app
 RUN rm -rf /app/receipt-wrangler-monolith
+
+# Set up entrypoint
+ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Expose http port
 EXPOSE 80
