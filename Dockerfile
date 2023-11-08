@@ -60,6 +60,7 @@ VOLUME /app/receipt-wrangler-api/logs
 WORKDIR /app/receipt-wrangler-monolith
 COPY . .
 COPY ./entrypoint.sh /app
+RUN chmod 777 /app/entrypoint.sh
 
 # Install nginx
 RUN apt update
@@ -78,7 +79,6 @@ WORKDIR /app
 RUN rm -rf /app/receipt-wrangler-monolith
 
 # Set up entrypoint
-RUN chmod +x /app/entrypoint.sh
 ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Expose http port
