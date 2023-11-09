@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>ReceiptWrangler</Name>
+  <Repository>noah231515/receipt-wrangler:latest</Repository>
+  <Registry>https://hub.docker.com/repository/docker/noah231515/receipt-wrangler/general</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>reddit.com/r/receiptwrangler</Support>
+  <Project>https://github.com/Receipt-Wrangler</Project>
+  <Overview/>
+  <Category>Productivity:</Category>
+  <WebUI>80</WebUI>
+  <TemplateURL/>
+  <Icon>https://avatars.githubusercontent.com/u/141039354?s=400&amp;amp;u=614387191a483eef308dbb696ce76fc74f6878dc&amp;amp;v=4</Icon>
+  <ExtraParams/>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled>1699559044</DateInstalled>
+  <DonateText/>
+  <DonateLink/>
+  <Requires>This application may require an external database to be ran, but an internal SQLITE database is supported.&#xD;
+Please read the documentation at https://github.com/Receipt-Wrangler to set up the configuration files, as well as the environment variables.</Requires>
+  <Config Name="DB_HOST" Target="DB_HOST" Default="" Mode="" Description="Database host" Type="Variable" Display="always" Required="false" Mask="false"/>
+  <Config Name="DB_USER" Target="DB_USER" Default="" Mode="" Description="DB_USER" Type="Variable" Display="always" Required="false" Mask="false"/>
+  <Config Name="DB_PASSWORD" Target="DB_PASSWORD" Default="" Mode="" Description="Database password" Type="Variable" Display="always" Required="false" Mask="true"/>
+  <Config Name="DB_NAME" Target="DB_NAME" Default="" Mode="" Description="Name of database" Type="Variable" Display="always" Required="false" Mask="false"/>
+  <Config Name="DB_ENGINE" Target="DB_ENGINE" Default="" Mode="" Description="Sets which database to use" Type="Variable" Display="always" Required="true" Mask="false">sqlite</Config>
+  <Config Name="DB_FILENAME" Target="DB_FILENAME" Default="" Mode="" Description="Name of database if using sqlite" Type="Variable" Display="always" Required="false" Mask="false">test.db</Config>
+  <Config Name="WebUI Port" Target="80" Default="" Mode="tcp" Description="Port for web ui&#13;&#10;" Type="Port" Display="always" Required="false" Mask="false">9080</Config>
+  <Config Name="Config path" Target="/app/receipt-wrangler-api/config" Default="" Mode="rw" Description="Directory to store configs" Type="Path" Display="always" Required="true" Mask="false"/>
+  <Config Name="Sqlite path" Target="/app/receipt-wrangler-api/sqlite" Default="" Mode="rw,shared" Description="Directory to store sqlite database" Type="Path" Display="always" Required="false" Mask="false"/>
+  <Config Name="Logs path" Target="/app/receipt-wrangler-api/logs" Default="" Mode="rw" Description="Directory to store application logs&#13;&#10;" Type="Path" Display="always" Required="false" Mask="false"/>
+  <Config Name="Data path" Target="/app/receipt-wrangler-api/data" Default="" Mode="rw" Description="Directory to store applciation images" Type="Path" Display="always" Required="false" Mask="false"/>
+</Container>
