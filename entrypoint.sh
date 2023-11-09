@@ -5,4 +5,4 @@ nginx -g 'daemon off;'
 
 # Start api
 cd /app/receipt-wrangler-api
-./api --env prod
+./api --env prod &
