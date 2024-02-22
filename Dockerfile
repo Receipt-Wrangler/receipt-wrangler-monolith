@@ -15,7 +15,7 @@ RUN npm install
 RUN npm run build
 
 # Setup API
-FROM golang:1.20.7-bullseye
+FROM golang:1.22.0-bullseye
 
 # Clone api soruce
 WORKDIR /app
