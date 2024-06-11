@@ -24,9 +24,6 @@ RUN git clone https://github.com/Receipt-Wrangler/receipt-wrangler-api.git
 # Setup API
 WORKDIR /app/receipt-wrangler-api
 
-# Set up config volume
-VOLUME /app/receipt-wrangler-api/config
-
 # Add local bin to path for python dependencies
 ENV PATH="~/.local/bin:${PATH}"
 
