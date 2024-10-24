@@ -3,8 +3,6 @@ name: Release
 on:
   repository_dispatch:
     types: [ published ]
-  push:
-    branches: [ "main" ]
 
 jobs:
   build:
