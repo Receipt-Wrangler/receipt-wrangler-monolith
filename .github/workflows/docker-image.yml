@@ -31,3 +31,6 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/receipt-wrangler:latest
+          build-args: |
+            VERSION=${{ github.event.client_payload.version }}
+            BUILD_DATE=${{ github.event.client_payload.build-date }}
