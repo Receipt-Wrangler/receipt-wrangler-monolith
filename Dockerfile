@@ -1,5 +1,8 @@
-FROM node:lts-bookworm as node
+FROM node:lts-alpine as node
 WORKDIR /app
+
+## Add git
+RUN apk add --no-cache git
 
 # Clone desktop source
 RUN git clone https://github.com/Receipt-Wrangler/receipt-wrangler-desktop.git
@@ -15,7 +18,7 @@ RUN npm install
 RUN npm run build
 
 # Setup API
-FROM golang:1.22.0-bullseye
+FROM golang:1.23.2-bookworm
 
 # Clone api soruce
 WORKDIR /app
