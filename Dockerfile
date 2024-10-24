@@ -1,9 +1,9 @@
+FROM node:lts-alpine as node
+WORKDIR /app
+
 # Define build arguments
 ARG VERSION
 ARG BUILD_DATE
-
-FROM node:lts-alpine as node
-WORKDIR /app
 
 ## Add git
 RUN apk add --no-cache git
@@ -11,6 +11,10 @@ RUN apk add --no-cache git
 # Clone desktop source
 RUN git clone https://github.com/Receipt-Wrangler/receipt-wrangler-desktop.git
 
+# Setup Desktop
+RUN npm install -g @angular/cli
+WORKDIR /app/receipt-wrangler-desktop
+
 # Conditional logic to pull a specific tag if VERSION is set
 RUN if [ -n "$VERSION" ]; then \
       git checkout $VERSION; \
@@ -18,12 +22,8 @@ RUN if [ -n "$VERSION" ]; then \
       echo "No version specified, using default branch"; \
     fi
 
-# Setup Desktop
-RUN npm install -g @angular/cli
-WORKDIR /app/receipt-wrangler-desktop
-
 # Set up npmrc
-COPY . . 
+COPY . .
 
 RUN npm install
 RUN npm run build
@@ -31,9 +31,16 @@ RUN npm run build
 # Setup API
 FROM golang:1.23.2-bookworm
 
+# Define build arguments
+ARG VERSION
+ARG BUILD_DATE
+
 # Clone api soruce
 WORKDIR /app
 RUN git clone https://github.com/Receipt-Wrangler/receipt-wrangler-api.git
+
+# Setup API
+WORKDIR /app/receipt-wrangler-api
 
 # Conditional logic to pull a specific tag if VERSION is set
 RUN if [ -n "$VERSION" ]; then \
@@ -41,9 +48,6 @@ RUN if [ -n "$VERSION" ]; then \
     else \
       echo "No version specified, using default branch"; \
     fi
-
-# Setup API
-WORKDIR /app/receipt-wrangler-api
 
 # Add local bin to path for python dependencies
 ENV PATH="~/.local/bin:${PATH}"
@@ -55,10 +59,10 @@ ENV ENV="prod"
 ENV BASE_PATH="/app/receipt-wrangler-api"
 
 # Set build date
-ENV BUILD_DATE=$BUILD_DATE
+ENV BUILD_DATE=${BUILD_DATE}
 
 # Set version
-ENV VERSION=$VERSION
+ENV VERSION=${VERSION}
 
 # Install tesseract dependencies
 RUN ./set-up-dependencies.sh
