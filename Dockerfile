@@ -16,10 +16,10 @@ RUN npm install -g @angular/cli
 WORKDIR /app/receipt-wrangler-desktop
 
 # Conditional logic to pull a specific tag if VERSION is set
-RUN if [ -n "$VERSION" ]; then \
+RUN if [ -n "$VERSION" ] && [ "$VERSION" != "latest" ]; then \
       git checkout $VERSION; \
     else \
-      echo "No version specified, using default branch"; \
+      echo "No specific version specified, using default branch"; \
     fi
 
 # Set up npmrc
@@ -43,11 +43,11 @@ RUN git clone https://github.com/Receipt-Wrangler/receipt-wrangler-api.git
 WORKDIR /app/receipt-wrangler-api
 
 # Conditional logic to pull a specific tag if VERSION is set
-RUN if [ -n "$VERSION" ]; then \
+RUN if [ -n "$VERSION" ] && [ "$VERSION" != "latest" ]; then \
       git checkout $VERSION; \
     else \
-      echo "No version specified, using default branch"; \
-    fi
+      echo "No specific version specified, using default branch"; \
+    fi \
 
 # Add local bin to path for python dependencies
 ENV PATH="~/.local/bin:${PATH}"
