@@ -47,7 +47,7 @@ RUN if [ -n "$VERSION" ] && [ "$VERSION" != "latest" ]; then \
       git checkout $VERSION; \
     else \
       echo "No specific version specified, using default branch"; \
-    fi \
+    fi
 
 # Add local bin to path for python dependencies
 ENV PATH="~/.local/bin:${PATH}"
