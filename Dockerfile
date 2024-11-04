@@ -65,7 +65,7 @@ ENV BUILD_DATE=${BUILD_DATE}
 ENV VERSION=${VERSION}
 
 # Install tesseract dependencies
-RUN ./set-up-dependencies.sh
+RUN bash set-up-dependencies.sh
 
 # Build api
 RUN go build
