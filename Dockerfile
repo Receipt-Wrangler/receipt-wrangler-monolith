@@ -84,6 +84,9 @@ VOLUME /app/receipt-wrangler-api/sqlite
 RUN mkdir logs
 VOLUME /app/receipt-wrangler-api/logs
 
+# Set pythonpath
+ENV PYTHONPATH="/app/receipt-wrangler-api/wranglervenv/lib/python3.11/site-packages"
+
 # Setup nginx
 WORKDIR /app/receipt-wrangler-monolith
 COPY . .
