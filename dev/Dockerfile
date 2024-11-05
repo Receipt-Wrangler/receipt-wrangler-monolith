@@ -29,6 +29,12 @@ RUN npm run build
 WORKDIR /app
 RUN git clone https://github.com/Receipt-Wrangler/receipt-wrangler-api.git
 
+# Clone docs source
+RUN git clone https://github.com/Receipt-Wrangler/receipt-wrangler-doc.git
+WORKDIR /app/receipt-wrangler-doc
+
+RUN npm install
+
 # Setup API
 WORKDIR /app/receipt-wrangler-api
 
@@ -64,14 +70,35 @@ VOLUME /app/receipt-wrangler-api/logs
 # Set pythonpath
 ENV PYTHONPATH="/app/receipt-wrangler-api/wranglervenv/lib/python3.11/site-packages"
 
-# Set up entrypoint
-ENTRYPOINT ["/app/entrypoint.sh"]
-
 # Expose http port
 EXPOSE 80
+
+# Setup SSH
+RUN apt-get update
+RUN apt-get install -y curl openssh-server
+
+RUN mkdir /var/run/sshd
+# Set root password for SSH access (change 'your_password' to something secure)
+RUN echo 'root:development' | chpasswd
+# Configure SSH to allow root login
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+# Configure SSH to allow password authentication
+RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
+
+# Create startup script to start SSH
+RUN echo '#!/bin/bash\n\
+/usr/sbin/sshd\n\
+tail -f /dev/null' > /app/startup.sh && \
+chmod +x /app/startup.sh
 
 # Expose SSH
 EXPOSE 22
 
+# Add Go environment variables to root's bash profile
+RUN echo 'export PATH=$PATH:/usr/local/go/bin:/go/bin' >> /root/.bashrc
+RUN echo 'export GOPATH=/go' >> /root/.bashrc
+
+WORKDIR /app
+
 # Keep er runnin
-CMD ["tail", "-f", "/dev/null"]
+CMD ["/app/startup.sh"]
