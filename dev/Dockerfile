@@ -20,6 +20,7 @@ RUN git clone https://github.com/Receipt-Wrangler/receipt-wrangler-desktop.git
 RUN ls
 WORKDIR /app/receipt-wrangler-desktop
 RUN npm install -g @angular/cli
+RUN npm install -g @openapitools/openapi-generator-cli
 
 # Build desktop
 RUN npm install
