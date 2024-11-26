@@ -10,6 +10,9 @@ RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
 # Install Node.js
 RUN apt-get install -y nodejs
 
+# Install Java
+RUN apt-get install -y default-jre
+
 # Start in app dir
 WORKDIR /app
 
