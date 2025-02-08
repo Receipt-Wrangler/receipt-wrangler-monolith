@@ -27,7 +27,7 @@ jobs:
         uses: docker/build-push-action@v6.13.0
         with:
           context: .
-          platforms: linux/arm64/v8
+          platforms: linux/arm64
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/receipt-wrangler:latest
