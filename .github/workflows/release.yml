@@ -29,7 +29,7 @@ jobs:
           platforms: linux/arm64/v8
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/receipt-wrangler:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/receipt-wrangler:${{ github.event.client_payload.version }}
           build-args: |
             VERSION=${{ github.event.client_payload.version }}
             BUILD_DATE=${{ github.event.client_payload.build-date }}
@@ -58,7 +58,7 @@ jobs:
           platforms: linux/amd64
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/receipt-wrangler:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/receipt-wrangler:${{ github.event.client_payload.version }}
           build-args: |
             VERSION=${{ github.event.client_payload.version }}
             BUILD_DATE=${{ github.event.client_payload.build-date }}
