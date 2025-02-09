@@ -81,3 +81,27 @@ jobs:
           sources: |
             ${{ secrets.DOCKER_USERNAME }}/receipt-wrangler:latest-amd64
             ${{ secrets.DOCKER_USERNAME }}/receipt-wrangler:latest-arm64
+
+  cleanup-tags:
+    name: Cleanup Architecture-Specific Tags
+    needs: [create-manifest]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete architecture-specific tags
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+        run: |
+          TOKEN=$(curl -s -X POST -H "Content-Type: application/json" \
+            -d "{\"username\": \"${DOCKER_USERNAME}\", \"password\": \"${DOCKER_TOKEN}\"}" \
+            https://hub.docker.com/v2/users/login/ | jq -r .token)
+          
+          # Delete latest-amd64 tag
+          curl -X DELETE \
+            -H "Authorization: Bearer ${TOKEN}" \
+            "https://hub.docker.com/v2/repositories/${DOCKER_USERNAME}/receipt-wrangler/tags/latest-amd64/"
+          
+          # Delete latest-arm64 tag
+          curl -X DELETE \
+            -H "Authorization: Bearer ${TOKEN}" \
+            "https://hub.docker.com/v2/repositories/${DOCKER_USERNAME}/receipt-wrangler/tags/latest-arm64/"
