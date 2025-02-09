@@ -9,7 +9,6 @@ jobs:
   build-arm64:
     name: Build ARM64 Image
     runs-on: ubuntu-22.04-arm
-
     steps:
       - name: Login to Docker Hub
         uses: docker/login-action@v2.1.0
@@ -30,7 +29,7 @@ jobs:
           platforms: linux/arm64
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/receipt-wrangler:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/receipt-wrangler:latest-arm64
           build-args: |
             VERSION=${{ github.event.client_payload.version }}
             BUILD_DATE=${{ github.event.client_payload.build-date }}
@@ -38,7 +37,6 @@ jobs:
   build-amd64:
     name: Build AMD64 Image
     runs-on: ubuntu-latest
-
     steps:
       - name: Login to Docker Hub
         uses: docker/login-action@v2.1.0
@@ -59,7 +57,32 @@ jobs:
           platforms: linux/amd64
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/receipt-wrangler:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/receipt-wrangler:latest-amd64
           build-args: |
             VERSION=${{ github.event.client_payload.version }}
             BUILD_DATE=${{ github.event.client_payload.build-date }}
+
+  create-manifest:
+    name: Create Multi-Arch Manifest
+    needs: [build-arm64, build-amd64]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2.1.0
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Create and push manifest
+        run: |
+          # Create the manifest
+          docker manifest create ${{ secrets.DOCKER_USERNAME }}/receipt-wrangler:latest \
+            --amend ${{ secrets.DOCKER_USERNAME }}/receipt-wrangler:latest-arm64 \
+            --amend ${{ secrets.DOCKER_USERNAME }}/receipt-wrangler:latest-amd64
+          
+          # Push the manifest
+          docker manifest push ${{ secrets.DOCKER_USERNAME }}/receipt-wrangler:latest
+          
+          # Optional: Clean up temporary tags
+          docker manifest rm ${{ secrets.DOCKER_USERNAME }}/receipt-wrangler:latest-arm64
+          docker manifest rm ${{ secrets.DOCKER_USERNAME }}/receipt-wrangler:latest-amd64
