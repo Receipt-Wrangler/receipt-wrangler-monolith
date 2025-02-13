@@ -103,7 +103,7 @@ RUN rm /etc/nginx/sites-available/*
 COPY ./default.conf /etc/nginx/conf.d/default.conf
 
 # Copy desktop dist
-COPY --from=node /app/receipt-wrangler-desktop/dist/receipt-wrangler /usr/share/nginx/html
+COPY --from=node /app/receipt-wrangler-desktop/dist/receipt-wrangler/browser /usr/share/nginx/html
 
 # Clean up
 WORKDIR /app
