@@ -55,7 +55,7 @@ ENV BASE_PATH="/app/receipt-wrangler-api"
 RUN bash set-up-dependencies.sh
 
 # Install python dependencies for imap-client
-RUN bash pip3 install -r imap-client/requirements.txt --break-system-packages
+RUN pip3 install -r imap-client/requirements.txt --break-system-packages
 
 # Build api
 RUN go build
@@ -84,7 +84,7 @@ EXPOSE 80
 RUN apt-get update
 RUN apt-get install -y curl openssh-server
 
-RUN mkdir /var/run/sshd
+RUN mkdir -p /var/run/sshd
 # Set root password for SSH access (change 'your_password' to something secure)
 RUN echo 'root:development' | chpasswd
 # Configure SSH to allow root login
